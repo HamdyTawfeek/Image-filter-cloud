@@ -17,12 +17,16 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // GET /filteredimage?image_url={{URL}}
  
   app.get( "/filteredimage", async ( req, res ) => {
-    let {image_url} = req.query;
+  try { let {image_url} = req.query;
+    console.log(image_url)
     if (!image_url){res.status(400).send(`Image url is required`)};
     const fitered_image_path = await filterImageFromURL(image_url);
+    console.log(">>>>", fitered_image_path)
     res.status(200).sendFile(fitered_image_path, async (error) => 
                 {if (error) {console.log(error);}});
-    await deleteLocalFiles([fitered_image_path]);
+    await deleteLocalFiles([fitered_image_path]);} catch(err) {
+      res.send("Error reading with jimp")
+    }
   } );
 
  
