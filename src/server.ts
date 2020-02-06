@@ -16,19 +16,21 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
  
-  app.get( "/filteredimage", async ( req, res ) => {
-  try { let {image_url} = req.query;
-    console.log(image_url)
-    if (!image_url){res.status(400).send(`Image url is required`)};
-    const fitered_image_path = await filterImageFromURL(image_url);
-    console.log(">>>>", fitered_image_path)
-    res.status(200).sendFile(fitered_image_path, async (error) => 
-                {if (error) {console.log(error);}});
-    await deleteLocalFiles([fitered_image_path]);} catch(err) {
-      res.send("Error reading with jimp")
-    }
-  } );
+  app.get("/filteredimage/", async (req, res) => {
+    let { image_url } = req.query;
+    if (!image_url) {res.status(400).send(`a public image url is required.`);};
 
+    let requestImgPath = await filterImageFromURL(image_url)
+
+    await res.status(200).sendFile(requestImgPath, function (err) {
+          if (err) {
+            console.log(err);
+            res.status(500).send('Can\'t return processed image')
+          };
+          deleteLocalFiles([requestImgPath])
+        });
+
+  });
  
   // Root Endpoint
   // Displays a simple message to the user
