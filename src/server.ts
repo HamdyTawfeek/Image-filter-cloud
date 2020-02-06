@@ -23,9 +23,8 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     let requestImgPath = await filterImageFromURL(image_url)
 
     await res.status(200).sendFile(requestImgPath, function (err) {
-          if (err) {
-            console.log(err);
-            res.status(500).send('Can\'t return processed image')
+          if (err) {console.log(err);
+            res.status(500).send('The image is Not processed')
           };
           deleteLocalFiles([requestImgPath])
         });
